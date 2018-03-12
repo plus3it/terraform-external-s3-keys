@@ -7,11 +7,10 @@ env:
     - AWS_DEFAULT_REGION="us-east-1"
     - TERRAFORM_VERSION=$(curl -s https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r -M '.current_version')
     - TERRAFORM_URL="https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip"
-    - TERRAGRUNT_URL=$(curl -s https://api.github.com/repos/gruntwork-io/terragrunt/releases/latest | jq --raw-output  '.assets[] | select(.name=="terragrunt_linux_amd64") | .browser_download_url')
 
 before_install:
   - curl -L -o terraform.zip $TERRAFORM_URL
-  - curl -L -o terragrunt $TERRAGRUNT_URL
+  - curl -L -o terragrunt $(curl -s https://api.github.com/repos/gruntwork-io/terragrunt/releases/latest | jq --raw-output  '.assets[] | select(.name=="terragrunt_linux_amd64") | .browser_download_url')
   - unzip terraform.zip && rm -f terraform.zip
   - chmod +x terraform terragrunt
   - mkdir -p $HOME/bin
@@ -54,3 +53,5 @@ jobs:
         tag_name: $RELEASE_VERSION
         body: $RELEASE_BODY
         draft: false
+        api_key:
+          secure: HdZxJ/RfHI1RlEXD/nHAKK+P8brDb1AEua3OxuvtE4xfUgPKjyGbcDKfZlnp/1D/ObF8OL9qxNz7Ce73Csm7bmmJwzfrS7TKsDXwwpzDsKZSJkw3mbgbP/DQ+LgDR2nYisHNS/lt2UqQd6JbOqhgN5k4b4qxWRwTcgJPaelwp/0B9klR25XcDi+I/XpYeNB1eIlzsGGmd3S0Tjkl8YkLXfCn52Lp6631cC1FxjITid1sWMj8EsYGQQOqHpAZIXczwSeAF/DMs1WbGgstMhNijBvGNvLYxhulsN4983/dCNHj1cwIUPGQmyzChKpWwbgaR4GaP3DavKzCRMYXJCt1hCR5Eg4gLyGZGaB7dd+MybR4WZfuNhrHHd0vURdYSGn+JZ3oDDIfz/8BXIXudN/TMennQnG6HRWpX4su+2/nEJBPp3UrkqxYu22qUgHzT30tFnX9cXficmQbCrLK/qArUVfkfc5VYZvZv8R6DY2sboQQv4tPAPhdkcwnuagNjYQQ0pkG4Yc82azzRuw4YEyEaCIwDRkOO/xu5yxWkfcCoLX0Os/nBn1DYoaUxNZC3VXGpqTlZ6hUKDAYttOlul7xnGhGMallfdsEUAU9kDD3DtASIKZ1B0uceJKlrRy8qZ6yLkr7+CraCmHs4nJV0Uyub7hP5t6EE6WEZjIBQIA6Mfg=
