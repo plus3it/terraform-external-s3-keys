@@ -5,12 +5,13 @@ sudo: false
 env:
   global:
     - AWS_DEFAULT_REGION="us-east-1"
-    - TERRAFORM_VERSION=$(curl -s https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r -M '.current_version')
-    - TERRAFORM_URL="https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip"
 
 before_install:
+  - TERRAFORM_VERSION=$(curl -s https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r -M '.current_version')
+  - TERRAFORM_URL="https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip"
+  - TERRAGRUNT_URL=$(curl --retry 5 https://api.github.com/repos/gruntwork-io/terragrunt/releases/latest | jq --raw-output  ".assets[] | select(.name==\"terragrunt_linux_amd64\") | .browser_download_url")
   - curl -L -o terraform.zip $TERRAFORM_URL
-  - curl -L -o terragrunt $(curl -s https://api.github.com/repos/gruntwork-io/terragrunt/releases/latest | jq --raw-output  '.assets[] | select(.name=="terragrunt_linux_amd64") | .browser_download_url')
+  - curl -L -o terragrunt $TERRAGRUNT_URL
   - unzip terraform.zip && rm -f terraform.zip
   - chmod +x terraform terragrunt
   - mkdir -p $HOME/bin
