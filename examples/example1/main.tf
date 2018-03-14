@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "example" {
-  bucket_prefix = "terraform-aws-bucket-keys-"
+  bucket_prefix = "terraform-external-s3-keys-"
 }
 
 resource "aws_s3_bucket_object" "foo" {
