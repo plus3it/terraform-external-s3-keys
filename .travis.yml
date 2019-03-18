@@ -44,7 +44,6 @@ jobs:
         - JOB="Terraform Validation Check"
         - TESTCOMMAND="terragrunt validate --terragrunt-working-dir examples/example1"
     - stage: deploy
-      if: branch = master AND type = push AND repo = env(DEPLOY_SLUG)
       env:
         - JOB="Deploy to GitHub Releases"
         - PRIOR_VERSION=$(git describe --abbrev=0 --tags)
@@ -55,7 +54,7 @@ jobs:
         - echo RELEASE_VERSION=$RELEASE_VERSION
         - echo RELEASE_BODY=$RELEASE_BODY
       script:
-        - test "$PRIOR_VERSION" = "$RELEASE_VERSION" && travis_terminate || echo "Deploying new version..."
+        - skip
       deploy:
         provider: releases
         name: $RELEASE_VERSION
@@ -64,3 +63,7 @@ jobs:
         draft: false
         api_key:
           secure: HdZxJ/RfHI1RlEXD/nHAKK+P8brDb1AEua3OxuvtE4xfUgPKjyGbcDKfZlnp/1D/ObF8OL9qxNz7Ce73Csm7bmmJwzfrS7TKsDXwwpzDsKZSJkw3mbgbP/DQ+LgDR2nYisHNS/lt2UqQd6JbOqhgN5k4b4qxWRwTcgJPaelwp/0B9klR25XcDi+I/XpYeNB1eIlzsGGmd3S0Tjkl8YkLXfCn52Lp6631cC1FxjITid1sWMj8EsYGQQOqHpAZIXczwSeAF/DMs1WbGgstMhNijBvGNvLYxhulsN4983/dCNHj1cwIUPGQmyzChKpWwbgaR4GaP3DavKzCRMYXJCt1hCR5Eg4gLyGZGaB7dd+MybR4WZfuNhrHHd0vURdYSGn+JZ3oDDIfz/8BXIXudN/TMennQnG6HRWpX4su+2/nEJBPp3UrkqxYu22qUgHzT30tFnX9cXficmQbCrLK/qArUVfkfc5VYZvZv8R6DY2sboQQv4tPAPhdkcwnuagNjYQQ0pkG4Yc82azzRuw4YEyEaCIwDRkOO/xu5yxWkfcCoLX0Os/nBn1DYoaUxNZC3VXGpqTlZ6hUKDAYttOlul7xnGhGMallfdsEUAU9kDD3DtASIKZ1B0uceJKlrRy8qZ6yLkr7+CraCmHs4nJV0Uyub7hP5t6EE6WEZjIBQIA6Mfg=
+        on:
+          branch: master
+          repo: $DEPLOY_SLUG
+          condition: '"$PRIOR_VERSION" != "$RELEASE_VERSION"'
