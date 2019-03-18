@@ -15,16 +15,23 @@ def keys_from_bucket_objects(objects):
     return [x["Key"] for x in objects if not x["Key"].endswith("/")]
 
 
-def list_s3_keys(s3, bucket, prefix=""):
+def list_s3_keys(bucket_name, prefix='/', delimiter='/', start_after=''):
     """List S3 Keys."""
-    return keys_from_bucket_objects(
-        s3.list_objects(Bucket=bucket, Prefix=prefix)['Contents'])
+    s3_paginator = boto3.client('s3').get_paginator('list_objects_v2')
+    prefix = prefix[1:] if prefix.startswith(delimiter) else prefix
+    start_after = (
+      (start_after or prefix) if prefix.endswith(delimiter) else start_after
+    )
+    for page in s3_paginator.paginate(
+        Bucket=bucket_name, Prefix=prefix, StartAfter=start_after
+    ):
+        for content in page.get('Contents', ()):
+            yield content['Key']
 
 
 def main(bucket, prefix="", delimiter=","):
     """Return dictionary of delimited keys."""
-    s3 = boto3.client("s3")
-    keys = list_s3_keys(s3=s3, bucket=bucket, prefix=prefix)
+    keys = list_s3_keys(bucket, prefix=prefix)
     return {"keys": delimiter.join(keys)}
 
 
