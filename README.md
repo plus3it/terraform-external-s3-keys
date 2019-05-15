@@ -1,5 +1,6 @@
 [![License](https://img.shields.io/github/license/plus3it/terraform-external-s3-keys.svg)](LICENSE)
 [![Travis CI Build Status](https://travis-ci.org/plus3it/terraform-external-s3-keys.svg?branch=master)](https://travis-ci.org/plus3it/terraform-external-s3-keys)
+[![pullreminders](https://pullreminders.com/badge.svg)](https://pullreminders.com?ref=badge)
 
 # terraform-external-s3-keys
 Terraform module that returns a list of object keys from an S3 bucket.
