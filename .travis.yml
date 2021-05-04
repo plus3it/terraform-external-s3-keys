@@ -17,6 +17,7 @@ before_install:
   - unzip terraform.zip && rm -f terraform.zip
   - mkdir -p $HOME/bin
   - export PATH=$PATH:$HOME/bin
+  - mv terraform $HOME/bin
   - terraform --version
 
 before_script:
@@ -32,9 +33,6 @@ jobs:
       env:
         - JOB="Terraform Format Check"
         - TESTCOMMAND="terraform fmt -check=true"
-    - stage: test
-      env:
-        - JOB="Terraform Validation Check"
     - stage: deploy
       env:
         - JOB="Deploy to GitHub Releases"
